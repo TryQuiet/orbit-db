@@ -1,8 +1,9 @@
 'use strict'
+
 const path = require('path')
-const { CID } = require('multiformats/cid')
 
 const notEmpty = e => e !== '' && e !== ' '
+let CID = null
 
 class OrbitDBAddress {
   constructor (root, path) {
@@ -66,5 +67,10 @@ class OrbitDBAddress {
     return (path.posix || path).join('/orbitdb', ...paths)
   }
 }
+
+(async () => {
+  const CIDModule = await import('multiformats/cid');
+  CID = CIDModule.CID;
+})();
 
 module.exports = OrbitDBAddress
