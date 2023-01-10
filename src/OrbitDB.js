@@ -16,7 +16,6 @@ const OrbitDBAddress = require('./orbit-db-address')
 const createDBManifest = require('./db-manifest')
 const exchangeHeads = require('./exchange-heads')
 const { isDefined, io } = require('./utils')
-const Storage = require('orbit-db-storage-adapter')
 const migrations = require('./migrations')
 
 const Logger = require('logplease')
@@ -37,61 +36,62 @@ const defaultTimeout = 30000 // 30 seconds
 class OrbitDB {
   constructor (ipfs, identity, options = {}) {
     if (!isDefined(ipfs)) { throw new Error('IPFS is a required argument. See https://github.com/orbitdb/orbit-db/blob/master/API.md#createinstance') }
-
+    
     if (!isDefined(identity)) { throw new Error('identity is a required argument. See https://github.com/orbitdb/orbit-db/blob/master/API.md#createinstance') }
-
+    
     this._ipfs = ipfs
     this.identity = identity
     this.id = options.peerId
     this._pubsub = !options.offline
-      ? new (
-          options.broker ? options.broker : Pubsub
-        )(this._ipfs, this.id)
+    ? new (
+      options.broker ? options.broker : Pubsub
+      )(this._ipfs, this.id)
       : null
-    this.directory = options.directory || './orbitdb'
-    this.storage = options.storage
-    this._directConnections = {}
-
-    this.caches = {}
-    this.caches[this.directory] = { cache: options.cache, handlers: new Set() }
-    this.keystore = options.keystore
-    this.stores = {}
-
-    // AccessControllers module can be passed in to enable
-    // testing with orbit-db-access-controller
-    AccessControllers = options.AccessControllers || AccessControllers
-  }
-
-  static get Pubsub () { return Pubsub }
-  static get Cache () { return Cache }
-  static get Keystore () { return Keystore }
-  static get Identities () { return Identities }
-  static get AccessControllers () { return AccessControllers }
-  static get Storage () { return Storage }
-  static get OrbitDBAddress () { return OrbitDBAddress }
-
-  static get Store () { return Store }
-  static get EventStore () { return EventStore }
-  static get FeedStore () { return FeedStore }
-  static get KeyValueStore () { return KeyValueStore }
-  static get CounterStore () { return CounterStore }
-  static get DocumentStore () { return DocumentStore }
-
-  get cache () { return this.caches[this.directory].cache }
-
-  static async createInstance (ipfs, options = {}) {
-    if (!isDefined(ipfs)) { throw new Error('IPFS is a required argument. See https://github.com/orbitdb/orbit-db/blob/master/API.md#createinstance') }
-
-    if (options.offline === undefined) {
-      options.offline = false
+      this.directory = options.directory || './orbitdb'
+      this.storage = options.storage
+      this._directConnections = {}
+      
+      this.caches = {}
+      this.caches[this.directory] = { cache: options.cache, handlers: new Set() }
+      this.keystore = options.keystore
+      this.stores = {}
+      
+      // AccessControllers module can be passed in to enable
+      // testing with orbit-db-access-controller
+      AccessControllers = options.AccessControllers || AccessControllers
     }
-
-    if (options.offline && !options.id) {
-      throw new Error('Offline mode requires passing an `id` in the options')
-    }
-
-    const { id } = options.id || options.offline ? ({ id: options.id }) : await ipfs.id()
-
+    
+    static get Pubsub () { return Pubsub }
+    static get Cache () { return Cache }
+    static get Keystore () { return Keystore }
+    static get Identities () { return Identities }
+    static get AccessControllers () { return AccessControllers }
+    // static get Storage () { return Storage }
+    static get OrbitDBAddress () { return OrbitDBAddress }
+    
+    static get Store () { return Store }
+    static get EventStore () { return EventStore }
+    static get FeedStore () { return FeedStore }
+    static get KeyValueStore () { return KeyValueStore }
+    static get CounterStore () { return CounterStore }
+    static get DocumentStore () { return DocumentStore }
+    
+    get cache () { return this.caches[this.directory].cache }
+    
+    static async createInstance (ipfs, options = {}) {
+      const Storage = await import('orbit-db-storage-adapter')
+      if (!isDefined(ipfs)) { throw new Error('IPFS is a required argument. See https://github.com/orbitdb/orbit-db/blob/master/API.md#createinstance') }
+      
+      if (options.offline === undefined) {
+        options.offline = false
+      }
+      
+      if (options.offline && !options.id) {
+        throw new Error('Offline mode requires passing an `id` in the options')
+      }
+      
+      const { id } = options.id || options.offline ? ({ id: options.id }) : await ipfs.id()
+      
     if (!options.directory) { options.directory = './orbitdb' }
 
     if (!options.storage) {
