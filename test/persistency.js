@@ -5,7 +5,6 @@ const mapSeries = require('p-map-series')
 const rmrf = require('rimraf')
 const path = require('path')
 const OrbitDB = require('../src/OrbitDB')
-const Cache = require('orbit-db-cache')
 
 const localdown = require('localstorage-down')
 const Storage = require('orbit-db-storage-adapter')
@@ -42,6 +41,8 @@ Object.keys(testAPIs).forEach(API => {
       let ipfsd, ipfs, orbitdb1, db, address
 
       before(async () => {
+        const Cache = await (await import('orbit-db-cache')).default
+
         const options = Object.assign({}, test.orbitDBConfig)
 
         if(test.type === "custom") {
