@@ -33,7 +33,7 @@
     "orbit-db-keystore": "~0.3.0",
     "orbit-db-kvstore": "~1.12.0",
     "orbit-db-pubsub": "TryQuiet/orbit-db-pubsub",
-    "orbit-db-storage-adapter": "^0.8.0",
+    "orbit-db-storage-adapter": "github:orbitdb/orbit-db-storage-adapter#fc61eedce6bc2b0b83d44c878cc7c9b25a8ec6ec",
     "orbit-db-store": "^4.3.4",
     "wherearewe": "^1.0.2"
   },
