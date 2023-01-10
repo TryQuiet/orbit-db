@@ -8,7 +8,6 @@ const KeyValueStore = require('orbit-db-kvstore')
 const CounterStore = require('orbit-db-counterstore')
 const DocumentStore = require('orbit-db-docstore')
 const Pubsub = require('orbit-db-pubsub')
-const Cache = require('orbit-db-cache')
 const Keystore = require('orbit-db-keystore')
 const Identities = require('orbit-db-identity-provider')
 let AccessControllers = require('orbit-db-access-controllers')
@@ -62,11 +61,9 @@ class OrbitDB {
     }
     
     static get Pubsub () { return Pubsub }
-    static get Cache () { return Cache }
     static get Keystore () { return Keystore }
     static get Identities () { return Identities }
     static get AccessControllers () { return AccessControllers }
-    // static get Storage () { return Storage }
     static get OrbitDBAddress () { return OrbitDBAddress }
     
     static get Store () { return Store }
@@ -79,7 +76,8 @@ class OrbitDB {
     get cache () { return this.caches[this.directory].cache }
     
     static async createInstance (ipfs, options = {}) {
-      const Storage = await import('orbit-db-storage-adapter')
+      const Storage = await (await import('orbit-db-storage-adapter')).default
+      const Cache = await (await import('orbit-db-cache')).default
       if (!isDefined(ipfs)) { throw new Error('IPFS is a required argument. See https://github.com/orbitdb/orbit-db/blob/master/API.md#createinstance') }
       
       if (options.offline === undefined) {
