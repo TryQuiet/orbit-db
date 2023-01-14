@@ -35,14 +35,6 @@ const defaultTimeout = 30000 // 30 seconds
 let Storage = null
 let Cache = null
 
-(async () => {
-  const StorageImported = await importDynamically('orbit-db-storage-adapter/src/index.js')
-  const CacheImported = await importDynamically('orbit-db/node_modules/orbit-db-cache/src/Cache.js')
-  
-  Cache = CacheImported.default
-  Storage = StorageImported.default
-})();
-
 class OrbitDB {
   constructor (ipfs, identity, options = {}) {
     if (!isDefined(ipfs)) { throw new Error('IPFS is a required argument. See https://github.com/orbitdb/orbit-db/blob/master/API.md#createinstance') }
@@ -549,6 +541,14 @@ class OrbitDB {
     return OrbitDBAddress.parse(address)
   }
 }
+
+(async () => {
+  const StorageImported = await importDynamically('orbit-db-storage-adapter/src/index.js')
+  const CacheImported = await importDynamically('orbit-db/node_modules/orbit-db-cache/src/Cache.js')
+  
+  Cache = CacheImported.default
+  Storage = StorageImported.default
+})();
 
 OrbitDB.prototype.AccessControllers = AccessControllers
 OrbitDB.prototype.Identities = Identities

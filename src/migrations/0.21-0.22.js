@@ -8,15 +8,12 @@ Logger.setLogLevel('ERROR')
 
 let Cache = null
 
-(async () => {
-  Cache = await importDynamically('orbit-db/node_modules/orbit-db-cache/src/Cache.js')
-})();
 
 async function migrate (OrbitDB, options, dbAddress) {
 
   let oldCache = OrbitDB.caches[options.directory] ? OrbitDB.caches[options.directory].cache : null
   let oldStore
-
+  
   if (!oldCache) {
     const addr = (path.posix || path).join(OrbitDB.directory, dbAddress.root, dbAddress.path)
     if (fs && fs.existsSync && !fs.existsSync(addr)) return
@@ -25,7 +22,7 @@ async function migrate (OrbitDB, options, dbAddress) {
   }
   const _localHeads = await oldCache.get('_localHeads')
   if (!_localHeads) return
-
+  
   const keyRoot = dbAddress.toString()
   logger.debug('Attempting to migrate from old cache location')
   const migrationKeys = [
@@ -34,7 +31,7 @@ async function migrate (OrbitDB, options, dbAddress) {
     'snapshot',
     'queue'
   ]
-
+  
   for (const i in migrationKeys) {
     try {
       const key = path.join(keyRoot, migrationKeys[i])
@@ -47,5 +44,9 @@ async function migrate (OrbitDB, options, dbAddress) {
   await options.cache.set(path.join(keyRoot, '_manifest'), dbAddress.root)
   if (oldStore) await oldStore.close()
 }
+
+(async () => {
+  Cache = await importDynamically('orbit-db/node_modules/orbit-db-cache/src/Cache.js')
+})();
 
 module.exports = migrate

@@ -7,11 +7,6 @@ const notEmpty = e => e !== '' && e !== ' '
 
 let CID = null
 
-(async () => {
-  const CIDModule = await importDynamically('multiformats/cjs/src/cid.js')
-  CID = CIDModule.CID;
-})();
-
 class OrbitDBAddress {
   constructor (root, path) {
     this.root = root
@@ -74,5 +69,10 @@ class OrbitDBAddress {
     return (path.posix || path).join('/orbitdb', ...paths)
   }
 }
+
+(async () => {
+  const CIDModule = await importDynamically('multiformats/cjs/src/cid.js')
+  CID = CIDModule.CID;
+})();
 
 module.exports = OrbitDBAddress
