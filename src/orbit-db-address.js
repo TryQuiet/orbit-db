@@ -1,9 +1,16 @@
 'use strict'
 
 const path = require('path')
+const { importDynamically } = require('./utils/importDynamically')
 
 const notEmpty = e => e !== '' && e !== ' '
+
 let CID = null
+
+(async () => {
+  const CIDModule = await importDynamically('multiformats/cjs/src/cid.js')
+  CID = CIDModule.CID;
+})();
 
 class OrbitDBAddress {
   constructor (root, path) {
@@ -67,10 +74,5 @@ class OrbitDBAddress {
     return (path.posix || path).join('/orbitdb', ...paths)
   }
 }
-
-(async () => {
-  const CIDModule = await import('multiformats/cid');
-  CID = CIDModule.CID;
-})();
 
 module.exports = OrbitDBAddress

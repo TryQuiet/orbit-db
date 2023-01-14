@@ -2,11 +2,17 @@ const path = require('path')
 const fs = require('../fs-shim')
 
 const Logger = require('logplease')
+const { importDynamically } = require('../utils/importDynamically')
 const logger = Logger.create('orbit-db')
 Logger.setLogLevel('ERROR')
 
+let Cache = null
+
+(async () => {
+  Cache = await importDynamically('orbit-db/node_modules/orbit-db-cache/src/Cache.js')
+})();
+
 async function migrate (OrbitDB, options, dbAddress) {
-  const Cache = await (await import('orbit-db-cache')).default
 
   let oldCache = OrbitDB.caches[options.directory] ? OrbitDB.caches[options.directory].cache : null
   let oldStore
