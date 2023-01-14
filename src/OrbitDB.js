@@ -14,11 +14,10 @@ let AccessControllers = require('orbit-db-access-controllers')
 const OrbitDBAddress = require('./orbit-db-address')
 const createDBManifest = require('./db-manifest')
 const exchangeHeads = require('./exchange-heads')
-const { isDefined, io } = require('./utils')
+const { isDefined, io, importDynamically} = require('./utils')
 const migrations = require('./migrations')
 
 const Logger = require('logplease')
-const { importDynamically } = require('./utils/importDynamically')
 const logger = Logger.create('orbit-db')
 Logger.setLogLevel('ERROR')
 

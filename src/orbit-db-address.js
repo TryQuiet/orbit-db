@@ -1,7 +1,7 @@
 'use strict'
 
 const path = require('path')
-const { importDynamically } = require('./utils/importDynamically')
+const { importDynamically } = require('./utils')
 
 const notEmpty = e => e !== '' && e !== ' '
 

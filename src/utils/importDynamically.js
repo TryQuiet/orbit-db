@@ -1,4 +1,6 @@
-export async function importDynamically(packageName){
+'use strict'
+ 
+ const importDynamically = async (packageName) => {
     if (process.env.APPIMAGE) {
       const resourcesPath = process.env.APPDIR
       const externalPackagePath = path.join(resourcesPath, `resources/node_modules/${packageName}`)
@@ -20,3 +22,5 @@ export async function importDynamically(packageName){
       return await eval(`import('${packageName}')`)
   }
   }
+
+  module.exports = importDynamically

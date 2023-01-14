@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('../fs-shim')
 
 const Logger = require('logplease')
-const { importDynamically } = require('../utils/importDynamically')
+const { importDynamically } = require('../utils')
 const logger = Logger.create('orbit-db')
 Logger.setLogLevel('ERROR')
 
