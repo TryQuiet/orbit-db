@@ -3,11 +3,7 @@
 const path = require('path')
 
 const importDynamically = async (packageName) => {
-  if (process.env.APPIMAGE) {
-    const resourcesPath = process.env.APPDIR
-    const externalPackagePath = path.join(resourcesPath, `resources/node_modules/${packageName}`)
-    return await eval(`import('${externalPackagePath}')`)
-  } else {
+  if (process.env.NODE_ENV === 'development') {
     switch (packageName) {
       case 'orbit-db/node_modules/orbit-db-cache/src/Cache.js':
         packageName = 'orbit-db-cache'
@@ -22,6 +18,10 @@ const importDynamically = async (packageName) => {
         packageName = packageName.split('/dist')[0]
     }
     return await eval(`import('${packageName}')`)
+  } else {
+    const resourcesPath = process.env.APPDIR
+    const externalPackagePath = path.join(resourcesPath, `resources/app/node_modules/@quiet/backend/node_modules/${packageName}`)
+    return await eval(`import('${externalPackagePath}')`)
   }
 }
 
