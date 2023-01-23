@@ -14,8 +14,10 @@ let AccessControllers = require('orbit-db-access-controllers')
 const OrbitDBAddress = require('./orbit-db-address')
 const createDBManifest = require('./db-manifest')
 const exchangeHeads = require('./exchange-heads')
-const { isDefined, io, importDynamically} = require('./utils')
+const { isDefined, io } = require('./utils')
 const migrations = require('./migrations')
+const Storage = require('orbit-db-storage-adapter')
+const Cache = requrie('orbit-db-cahce')
 
 const Logger = require('logplease')
 const logger = Logger.create('orbit-db')
@@ -32,8 +34,6 @@ const databaseTypes = {
 
 const defaultTimeout = 30000 // 30 seconds
 
-let Storage = null
-let Cache = null
 
 class OrbitDB {
   constructor (ipfs, identity, options = {}) {
@@ -541,14 +541,6 @@ class OrbitDB {
     return OrbitDBAddress.parse(address)
   }
 }
-
-(async () => {
-  const StorageImported = await importDynamically('orbit-db-storage-adapter/src/index.js')
-  const CacheImported = await importDynamically('orbit-db/node_modules/orbit-db-cache/src/Cache.js')
-  
-  Cache = CacheImported.default
-  Storage = StorageImported.default
-})();
 
 OrbitDB.prototype.AccessControllers = AccessControllers
 OrbitDB.prototype.Identities = Identities
