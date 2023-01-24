@@ -68,4 +68,4 @@ class OrbitDBAddress {
   }
 }
 
-module.exports = OrbitDBAddress
+export default OrbitDBAddress
